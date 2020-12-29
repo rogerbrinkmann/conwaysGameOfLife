@@ -67,8 +67,8 @@ public class Petridish extends JPanel {
 
     private void calculateSecondGeneration() {
         int neighborCount = 0;
-        for (int x = 1; x < this.columnCount - 1; x++) {
-            for (int y = 1; y < this.rowCount - 1; y++) {
+        for (int x = 0; x < this.columnCount; x++) {
+            for (int y = 0; y < this.rowCount; y++) {
                 neighborCount = countNeighbors(x, y);
 
                 if (firstGeneration[x][y] == 0) {
@@ -86,18 +86,28 @@ public class Petridish extends JPanel {
         }
     }
 
-    private void copyGeneration(int[][] von, int[][] zu) {
+    private void copyGeneration(int[][] source, int[][] target) {
         for (int x = 0; x < this.columnCount; x++) {
             for (int y = 0; y < this.rowCount; y++) {
-                zu[x][y] = von[x][y];
+                target[x][y] = source[x][y];
             }
         }
     }
 
     private int countNeighbors(int x, int y) {
-        return firstGeneration[x - 1][y - 1] + firstGeneration[x][y - 1] + firstGeneration[x + 1][y - 1]
-                + firstGeneration[x - 1][y] + firstGeneration[x + 1][y] + firstGeneration[x - 1][y + 1]
-                + firstGeneration[x][y + 1] + firstGeneration[x + 1][y + 1];
+        int neighborCount = 0;
+        int checkCol = 0;
+        int checkRow = 0;
+        for (int col = x - 1; col <= x + 1; col++) {
+            for (int row = y - 1; row <= y + 1; row++) {
+                if (col != x || row != y) {
+                    checkCol = (col + columnCount) % columnCount;
+                    checkRow = (row + rowCount) % rowCount;
+                    neighborCount += firstGeneration[checkCol][checkRow];
+                }
+            }
+        }
+        return neighborCount;
     }
 
     public void toggleState(int xPos, int yPos) {
@@ -119,5 +129,14 @@ public class Petridish extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(img, 0, 0, null);
+    }
+
+    public void printGeneration(int[][] generation){
+        for (int y = 0; y < this.rowCount; y++) {
+            for (int x = 0; x < this.columnCount; x++) {
+                System.out.print(generation[x][y]);
+            }
+            System.out.println();
+        }
     }
 }

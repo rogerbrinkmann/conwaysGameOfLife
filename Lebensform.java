@@ -1,8 +1,9 @@
 import java.awt.BorderLayout;
-
+import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import javax.swing.event.ChangeEvent;
@@ -20,6 +21,7 @@ public class Lebensform extends JFrame implements ActionListener {
 
     private int width = 800;
     private int height = 500;
+    private int cellSize = 5;
     Timer timer;
     JButton startButton;
     JButton stopButton;
@@ -28,7 +30,7 @@ public class Lebensform extends JFrame implements ActionListener {
     JSlider slider;
     JLabel speedLabel;
     Petridish petridish;
-    Menubar menuBar;
+    JPanel menuBar;
     CustomMouseAdapter eventListener = new CustomMouseAdapter();
 
     Lebensform() {
@@ -38,13 +40,14 @@ public class Lebensform extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.timer = new Timer(1000, this);
-        this.menuBar = new Menubar();
+        this.menuBar = new JPanel();
+        this.menuBar.setLayout(new FlowLayout(FlowLayout.LEADING));
         this.startButton = new JButton("Start");
         this.stopButton = new JButton("Stop");
         this.clearButton = new JButton("Clear");
         this.stepButton = new JButton("Step");
         this.slider = new JSlider(JSlider.HORIZONTAL, 0, 20, 1);
-        this.speedLabel = new JLabel(Integer.toString(slider.getValue()));
+        this.speedLabel = new JLabel(Integer.toString(slider.getValue() * 100));
 
         this.startButton.addMouseListener(eventListener);
         this.stopButton.addMouseListener(eventListener);
@@ -74,7 +77,7 @@ public class Lebensform extends JFrame implements ActionListener {
         this.menuBar.add(slider);
         this.menuBar.add(speedLabel);
 
-        this.petridish = new Petridish(width, height, 20);
+        this.petridish = new Petridish(width, height, cellSize);
         this.petridish.addMouseListener(eventListener);
         this.petridish.addMouseMotionListener(new CustomMouseMotionAdapter());
 
@@ -128,13 +131,13 @@ public class Lebensform extends JFrame implements ActionListener {
         }
     }
 
-    class CustomMouseMotionAdapter extends MouseMotionAdapter{
+    class CustomMouseMotionAdapter extends MouseMotionAdapter {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-           if (e.getSource() == petridish){
-               petridish.setAlive(e.getX(), e.getY());
-           }
+            if (e.getSource() == petridish) {
+                petridish.setAlive(e.getX(), e.getY());
+            }
         }
     }
 }
